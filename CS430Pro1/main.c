@@ -14,10 +14,12 @@ typedef struct PPMFormat{
      RGBPixel *data;
 } PPMFormat;
 
+
 static PPMFormat *readPPM(const char *file){
          char BufferSize[16];
          PPMFormat *image;
          FILE *fp;
+
 
          //Opening the file
          fp = fopen(file, "rb");
@@ -32,25 +34,23 @@ static PPMFormat *readPPM(const char *file){
               exit(1);
          }
 
-    //Checking if the file format
+
     if (BufferSize[0] != 'P' || BufferSize[1] != '3'){
-         fprintf(stderr, "ERROR: This is not a p3 file! \n");
+         fprintf(stderr, "This is not a p3 file! \n");
          exit(1);
     }
     else if (BufferSize[0] == 'P' || BufferSize[1] == '3'){
-         fprintf(stderr, "This is a p3 file! \n");
+        printf("This is a p3 file!\n");
+    }
+
+    if (BufferSize[0] != 'P' || BufferSize[1] != '6'){
+         fprintf(stderr, "This is not a p6 file! \n");
          exit(1);
     }
-    else if (BufferSize[0] != 'P' || BufferSize[1] != '6'){
-         fprintf(stderr, "ERROR: This is not a p6 file! \n");
-         exit(1);
-    }
+
     else if (BufferSize[0] == 'P' || BufferSize[1] == '6'){
-         fprintf(stderr, "This is a p6 file! \n");
-         exit(1);
+        printf("This is a p6 file!\n");
     }
-
-
 
 
 }

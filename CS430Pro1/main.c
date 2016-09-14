@@ -32,20 +32,36 @@ static PPMFormat *readPPM(const char *file){
               exit(1);
          }
 
-    //check the image format for P6.ppm
+    //Checking if the file format
     if (BufferSize[0] != 'P' || BufferSize[1] != '3'){
          fprintf(stderr, "ERROR: This is not a p3 file! \n");
          exit(1);
     }
-    else{
-        printf("This is a P3 file.\n");
+    else if (BufferSize[0] == 'P' || BufferSize[1] == '3'){
+         fprintf(stderr, "This is a p3 file! \n");
+         exit(1);
     }
+    else if (BufferSize[0] != 'P' || BufferSize[1] != '6'){
+         fprintf(stderr, "ERROR: This is not a p6 file! \n");
+         exit(1);
+    }
+    else if (BufferSize[0] == 'P' || BufferSize[1] == '6'){
+         fprintf(stderr, "This is a p6 file! \n");
+         exit(1);
+    }
+
+
+
+
 }
 
 int main(int argc, char *argv[]){
     printf("Testing 123...\n");
+
     PPMFormat *image;
     image = readPPM("p3.ppm");
+
+
     printf("Did it work?\n");
     //Check if arguments are not equal to 4
     if(argc != 4){

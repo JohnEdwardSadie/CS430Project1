@@ -15,7 +15,7 @@ typedef struct PPMFormat{
 } PPMFormat;
 
 
-static PPMFormat *readPPM(const char *file){
+static PPMFormat *Read(const char *file){
          char BufferSize[16];
          PPMFormat *image;
          FILE *fp;
@@ -39,7 +39,7 @@ static PPMFormat *readPPM(const char *file){
          fprintf(stderr, "This is not a p3 file! \n");
          exit(1);
     }
-    else if (BufferSize[0] == 'P' || BufferSize[1] == '3'){
+    else if (image = "p3.ppm" || BufferSize[0] == 'P' || BufferSize[1] == '3'){
         printf("This is a p3 file!\n");
     }
 
@@ -48,18 +48,38 @@ static PPMFormat *readPPM(const char *file){
          exit(1);
     }
 
-    else if (BufferSize[0] == 'P' || BufferSize[1] == '6'){
+    else if (image = "p6.ppm" || BufferSize[0] == 'P' || BufferSize[1] == '6'){
         printf("This is a p6 file!\n");
     }
 
 
 }
 
+void Write(const char *file, PPMFormat *image){
+    FILE *fp;
+
+    fp = fopen(file, "wb");
+    if(!fp){
+        fprintf(stderr, "I was unable to find the file: %s'\n", file);
+        exit(1);
+    }
+    //writing P3 data
+    //Using fprintf as advised by Dr. Palmer
+    fprintf(fp, "# John Sadie Was Here!\n");
+    fwrite(image->data, 3 * image->x, image->y, fp);
+    fclose(fp);
+
+}
+
+
+
+
 int main(int argc, char *argv[]){
     printf("Testing 123...\n");
 
     PPMFormat *image;
-    image = readPPM("p3.ppm");
+    image = Read("p3.ppm");
+    Write("OutputP3.ppm", image);
 
 
     printf("Did it work?\n");

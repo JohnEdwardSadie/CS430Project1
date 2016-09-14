@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1473838673 source:c:\users\3ggie\desktop\cs430pro1\main.c
+	<stdlib.h>
+	<stdio.h>
+
+1473837849 source:c:\users\3ggie\desktop\project1cs430\cs430pro1\main.c
+	<stdlib.h>
+	<stdio.h>
+

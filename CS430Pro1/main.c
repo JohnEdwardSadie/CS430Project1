@@ -1,115 +1,143 @@
-#include <stdlib.h>
-#include <stdio.h>
+#include<stdio.h>
+#include<stdlib.h>
 
-int width;
-int height;
-int c;
+//John E. Sadie
+//CS430 Computer Graphics
+//Project 1 Computer Images
 
-//defining structure variables
-typedef struct RGBPixel{
+
+
+//Character array for storing data
+char BufferSize[255];
+#define Color 255
+
+//Defining data type pixelData
+typedef struct pixelData{
      unsigned char r,g,b;
-} RGBPixel;
+} pixelData;
 
-typedef struct PPMFormat{
-     int x, y;
-     RGBPixel *data;
-} PPMFormat;
+//Defining data type pixelimage
+typedef struct pixelImage{
+     int x;
+     int y;
+     pixelData *data;
+} pixelImage;
 
 
-static PPMFormat *Read(const char *file){
-
-         char BufferSize[30];
-
-         PPMFormat *image;
-
-         FILE *fp;
+static pixelImage *Read(const char *file){
+         pixelImage *pixelImg;
+         int c, RGBColor;
 
          //Opening the file
+         FILE *fp;
          fp = fopen(file, "rb");
          if (!fp){
-              fprintf(stderr, "ERROR! The file: '%s' does not exist...'\n", file);
+              fprintf(stderr, "ERROR! The file: '%s' does not exist...\n", file);
               exit(1);
          }
 
-         //Reading the file format
+         //Reading the format of the file
          if (!fgets(BufferSize, sizeof(BufferSize), fp)){
               perror(file);
               exit(1);
          }
 
-
+    //Checking if the file is not a P6 file
     if (BufferSize[0] != 'P' || BufferSize[1] != '3'){
-         fprintf(stderr, "This is not a p3 file! \n");
+         fprintf(stderr, "This is not a P3 file! \n");
          exit(1);
     }
-    else if (BufferSize[0] == 'P' || BufferSize[1] == '3'){
-        printf("This is a p3 file!\n");
-        exit(1);
+    //Else print out that it is
+    else{
+        printf("This is a P3 file! \n");
     }
 
-    if (BufferSize[0] != 'P' || BufferSize[1] != '6'){
-         fprintf(stderr, "This is not a p6 file! \n");
+
+    //Allocating space to store pixelImage
+    pixelImg = (pixelImage *)malloc(sizeof(pixelImage));
+    if (!pixelImg){
+         fprintf(stderr, "ERROR! Can't allocate memory\n");
          exit(1);
     }
-
-    else if (BufferSize[0] == 'P' || BufferSize[1] == '6'){
-        printf("This is a p6 file!\n");
-        exit(1);
-    }
-
 
     //Since I don't know how many characters comments are
     //Checking for comments
     c = getc(fp);
-    while (c == '#'){
+    while (c == '#') {
     while (getc(fp) != '\n') ;
          c = getc(fp);
     }
     ungetc(c, fp);
-    //Reading the dimensions of the image
-    if (fscanf(fp, "%d %d", &image->x, &image->y) != 2){
-         fprintf(stderr, "ERROR on file: %s\n", file);
+
+
+    //Reading the input size
+    if (fscanf(fp, "%d %d", &pixelImg->x, &pixelImg->y) != 2){
+         fprintf(stderr, "Invalid image size (error loading '%s')\n", file);
          exit(1);
     }
 
-
-
-
-}
-
-void Write(const char *file, PPMFormat *image){
-    FILE *fp;
-
-    fp = fopen(file, "wb");
-    if(!fp){
-        fprintf(stderr, "I was unable to find the file: %s'\n", file);
-        exit(1);
+    //Reading RGBColor
+    if (fscanf(fp, "%d", &RGBColor) != 1){
+         fprintf(stderr, "ERROR! Can't read RGBColor\n", file);
+         exit(1);
     }
-    //writing P3 data
-    //Using fprintf as advised by Dr. Palmer
-    fprintf(fp, "# John Sadie Was Here!\n");
-    fwrite(image->data, 3 * image->x, image->y, fp);
+
+    //Checking RGB Depth
+    if (RGBColor!= Color){
+         fprintf(stderr, "ERROR! With RGB Depth of file:'%s'\n", file);
+         exit(1);
+    }
+
+    //Allocating memory to pixelData
+    while (fgetc(fp) != '\n') ;
+    pixelImg->data = (pixelData*)malloc(pixelImg->x * pixelImg->y * sizeof(pixelData));
+
+    //Checking if allocating memory has gone wrong
+    if (!pixelImg){
+         fprintf(stderr, "ERROR! Can't allocate memory\n");
+         exit(1);
+    }
+
+    //Reading the data from 'file'
+    if (fread(pixelImg->data, 3 * pixelImg->x, pixelImg->y, fp) != pixelImg->y){
+         fprintf(stderr, "Error loading image '%s'\n", file);
+         exit(1);
+    }
     fclose(fp);
-
+    return pixelImg;
 }
+void Write(const char *file, pixelImage *pixelImg){
+    //Open 'file' for output.ppm
+    FILE *fp;
+    fp = fopen(file, "wb");
+    if (!fp) {
+         fprintf(stderr, "ERROR! Can't open file: '%s'\n", file);
+         exit(1);
+    }
 
-
+    //Reformatting output.ppm
+    fprintf(fp, "P3\n");
+    fprintf(fp, "# John Sadie Was Here!\n");
+    fprintf(fp, "%d %d\n",pixelImg->x,pixelImg->y);
+    fprintf(fp, "%d\n",Color);
+    //Writing data
+    fwrite(pixelImg->data, 3 * pixelImg->x, pixelImg->y, fp);
+    fclose(fp);
+}
 
 
 int main(int argc, char *argv[]){
-    printf("Testing 123...\n");
-
-    PPMFormat *image;
+    pixelImage *image;
+    //Reading a ppm file
     image = Read("p3.ppm");
-    Write("OutputP3.ppm", image);
-
-
-    printf("Did it work?\n");
-    //Check if arguments are not equal to 4
+    //Writing to a ppm file
+    Write("output.ppm",image);
+    //Testing print statement
+    printf("Did it work?");
+    //Check if command line arguments are not equal to 4
     if(argc != 4){
         fprintf(stderr, "ERROR\n");
         return 1;
     }
-    return 0;
-
+    getchar();
 }

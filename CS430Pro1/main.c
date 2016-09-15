@@ -21,8 +21,60 @@ typedef struct pixelImage{
 } pixelImage;
 
 
-static pixelImage *Read(const char *file)
-{
+static pixelImage *ReadP3(const char *file){
+
+         pixelImage *pixelImg;
+         int c, RGBColor;
+
+         //Opening the file
+         FILE *fp;
+         fp = fopen(file, "rb");
+         if (!fp){
+              fprintf(stderr, "ERROR! The file: '%s' does not exist...\n", file);
+              exit(1);
+         }
+
+         //Reading the format of the file
+         if (!fgets(BufferSize, sizeof(BufferSize), fp)){
+              perror(file);
+              exit(1);
+         }
+
+    //Checking if the file is not a P6 file
+    if (BufferSize[0] != 'P' || BufferSize[1] != '3'){
+         fprintf(stderr, "This is not a P3 file! \n");
+         exit(1);
+    }
+    //Else print out that it is
+    else{
+        printf("This is a P3 file! \n");
+    }
+
+
+}
+
+void WriteP3(const char *file, pixelImage *pixelImg){
+         int c;
+    //Open 'file' for output.ppm
+    FILE *ofp;
+    FILE *fp;
+    fp = fopen(file, "wb");
+    if (!fp) {
+         fprintf(stderr, "ERROR! Can't open file: '%s'\n", file);
+         exit(1);
+    }
+
+    ofp = fopen("outputp3.ppm", "w");
+
+
+    fprintf(fp, c );
+    fclose(fp);
+    fclose(ofp);
+}
+
+
+
+static pixelImage *ReadP6(const char *file){
 
          pixelImage *pixelImg;
          int c, RGBColor;
@@ -106,7 +158,7 @@ static pixelImage *Read(const char *file)
     fclose(fp);
     return pixelImg;
 }
-void Write(const char *file, pixelImage *pixelImg){
+void WriteP6(const char *file, pixelImage *pixelImg){
     //Open 'file' for output.ppm
     FILE *fp;
     fp = fopen(file, "wb");
@@ -128,10 +180,16 @@ void Write(const char *file, pixelImage *pixelImg){
 
 int main(int argc, char *argv[]){
     pixelImage *image;
-    //Reading a ppm file
-    image = Read("p6.ppm");
-    //Writing to a ppm file
-    Write("output.ppm",image);
+
+    //Reading a p6 ppm file
+    image = ReadP6("p6.ppm");
+     //Writing to a p6 ppm file
+    WriteP6("outputp6.ppm",image);
+
+    //Reading a p3 ppm file
+    //image = ReadP3("p3.ppm");
+   // WriteP3("outputp3.ppm", image);
+
     //Testing print statement
     printf("Did it work?");
     //Check if arguments are not equal to 4

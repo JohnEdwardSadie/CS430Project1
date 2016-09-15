@@ -51,30 +51,18 @@ static pixelImage *ReadP3(const char *file){
     }
 
 
+
 }
 
 void WriteP3(const char *file, pixelImage *pixelImg){
-         int c;
-    //Open 'file' for output.ppm
-    FILE *ofp;
-    FILE *fp;
-    fp = fopen(file, "wb");
-    if (!fp) {
-         fprintf(stderr, "ERROR! Can't open file: '%s'\n", file);
-         exit(1);
-    }
 
-    ofp = fopen("outputp3.ppm", "w");
-
-
-    fprintf(fp, c );
-    fclose(fp);
-    fclose(ofp);
 }
+
 
 
 
 static pixelImage *ReadP6(const char *file){
+
 
          pixelImage *pixelImg;
          int c, RGBColor;
@@ -187,7 +175,7 @@ int main(int argc, char *argv[]){
     WriteP6("outputp6.ppm",image);
 
     //Reading a p3 ppm file
-    //image = ReadP3("p3.ppm");
+   // image = ReadP3("p3.ppm");
    // WriteP3("outputp3.ppm", image);
 
     //Testing print statement

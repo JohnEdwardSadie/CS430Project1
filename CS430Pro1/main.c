@@ -5,8 +5,6 @@
 //CS430 Computer Graphics
 //Project 1 Computer Images
 
-
-
 //Character array for storing data
 char BufferSize[255];
 #define Color 255
@@ -18,13 +16,14 @@ typedef struct pixelData{
 
 //Defining data type pixelimage
 typedef struct pixelImage{
-     int x;
-     int y;
+     int x, y;
      pixelData *data;
 } pixelImage;
 
 
-static pixelImage *Read(const char *file){
+static pixelImage *Read(const char *file)
+{
+
          pixelImage *pixelImg;
          int c, RGBColor;
 
@@ -43,13 +42,13 @@ static pixelImage *Read(const char *file){
          }
 
     //Checking if the file is not a P6 file
-    if (BufferSize[0] != 'P' || BufferSize[1] != '3'){
-         fprintf(stderr, "This is not a P3 file! \n");
+    if (BufferSize[0] != 'P' || BufferSize[1] != '6'){
+         fprintf(stderr, "This is not a P6 file! \n");
          exit(1);
     }
     //Else print out that it is
     else{
-        printf("This is a P3 file! \n");
+        printf("This is a P6 file! \n");
     }
 
 
@@ -72,8 +71,9 @@ static pixelImage *Read(const char *file){
 
     //Reading the input size
     if (fscanf(fp, "%d %d", &pixelImg->x, &pixelImg->y) != 2){
-         fprintf(stderr, "Invalid image size (error loading '%s')\n", file);
+         fprintf(stderr, "ERROR! Can't read input size\n");
          exit(1);
+
     }
 
     //Reading RGBColor
@@ -116,7 +116,7 @@ void Write(const char *file, pixelImage *pixelImg){
     }
 
     //Reformatting output.ppm
-    fprintf(fp, "P3\n");
+    fprintf(fp, "P6\n");
     fprintf(fp, "# John Sadie Was Here!\n");
     fprintf(fp, "%d %d\n",pixelImg->x,pixelImg->y);
     fprintf(fp, "%d\n",Color);
@@ -129,12 +129,12 @@ void Write(const char *file, pixelImage *pixelImg){
 int main(int argc, char *argv[]){
     pixelImage *image;
     //Reading a ppm file
-    image = Read("p3.ppm");
+    image = Read("p6.ppm");
     //Writing to a ppm file
     Write("output.ppm",image);
     //Testing print statement
     printf("Did it work?");
-    //Check if command line arguments are not equal to 4
+    //Check if arguments are not equal to 4
     if(argc != 4){
         fprintf(stderr, "ERROR\n");
         return 1;

@@ -7,7 +7,7 @@
 
 //Character array for storing data
 char BufferSize[999999];
-#define Color 255
+
 
 //Defining data type pixelData
 typedef struct pixelData{
@@ -20,6 +20,8 @@ typedef struct pixelImage{
      pixelData *data;
 } pixelImage;
 
+#define Color 255
+int c, RGBColor;
 
 static pixelImage *ReadWriteP3(const char *file){
 
@@ -100,14 +102,14 @@ static pixelImage *ReadWriteP3(const char *file){
     fprintf(fp, "%s\n", BufferSize);
     fclose(fp);
 
+
+
 }
 
+static pixelImage *ReadWriteP6(const char *file){
+        pixelImage *pixelImg;
 
 
-static pixelImage *ReadP6(const char *file){
-
-
-         pixelImage *pixelImg;
          int c, RGBColor;
 
          //Opening the file
@@ -138,7 +140,7 @@ static pixelImage *ReadP6(const char *file){
     //Allocating space to store pixelImage
     pixelImg = (pixelImage *)malloc(sizeof(pixelImage));
     if (!pixelImg){
-         fprintf(stderr, "ERROR! Can't allocate memory\n");
+         fprintf(stderr, "ERROR! CanpixelImage *pixelImg;'t allocate memory\n");
          exit(1);
     }
 
@@ -186,13 +188,8 @@ static pixelImage *ReadP6(const char *file){
          fprintf(stderr, "Error loading image '%s'\n", file);
          exit(1);
     }
-    fclose(fp);
-    return pixelImg;
-}
-void WriteP6(const char *file, pixelImage *pixelImg){
-    //Open 'file' for output.ppm
-    FILE *fp;
-    fp = fopen(file, "wb");
+
+    fp = fopen("outputp6.ppm", "wb");
     if (!fp) {
          fprintf(stderr, "ERROR! Can't open file: '%s'\n", file);
          exit(1);
@@ -206,30 +203,26 @@ void WriteP6(const char *file, pixelImage *pixelImg){
     //Writing data
     fwrite(pixelImg->data, 3 * pixelImg->x, pixelImg->y, fp);
     fclose(fp);
-}
-
-void P3ToP6(const char *file){
-
-    FILE *fp;
-    fp = fopen(file, "rb");
-
 
 }
 
-void P6ToP3(){
-}
+
+
 
 
 int main(int argc, char *argv[]){
+
     pixelImage *image;
 
-    //Reading a p6 ppm file
-    //image = ReadP6("p6.ppm");
-     //Writing to a p6 ppm file
-    //WriteP6("outputp6.ppm",image);
-
-    //Reading a p3 ppm file
+    //Reading/Writing a p3 ppm file
     image = ReadWriteP3("p3.ppm");
+
+    //Reading/Write a P6 ppm file
+    image = ReadWriteP6("p6.ppm");
+
+
+
+
 
 
     //Testing print statement

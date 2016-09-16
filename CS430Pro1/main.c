@@ -6,7 +6,7 @@
 //Project 1 Computer Images
 
 //Character array for storing data
-char BufferSize[255];
+char BufferSize[999999];
 #define Color 255
 
 //Defining data type pixelData
@@ -21,7 +21,7 @@ typedef struct pixelImage{
 } pixelImage;
 
 
-static pixelImage *ReadP3(const char *file){
+static pixelImage *ReadWriteP3(const char *file){
 
          pixelImage *pixelImg;
          int c, RGBColor;
@@ -50,14 +50,57 @@ static pixelImage *ReadP3(const char *file){
         printf("This is a P3 file! \n");
     }
 
+    pixelImg = (pixelImage *)malloc(sizeof(pixelImage));
+    if (!pixelImg) {
+        fprintf(stderr, "Error allocating memory\n");
+        exit(1);
+    }
 
+    //Since I don't know how many characters comments are
+    //Checking for comments
+    c = getc(fp);
+    while (c == '#') {
+        while (getc(fp) != '\n') ;
+        c = getc(fp);
+    }
+
+    ungetc(c, fp);
+
+   //Reading the input size
+    if (fscanf(fp, "%d %d", &pixelImg->x, &pixelImg->y) != 2){
+         fprintf(stderr, "ERROR! Can't read input size\n");
+         exit(1);
+
+    }
+
+    //Reading RGBColor
+    if (fscanf(fp, "%d", &RGBColor) != 1){
+         fprintf(stderr, "ERROR! Can't read RGBColor\n", file);
+         exit(1);
+    }
+
+    //Checking RGB Depth
+    if (RGBColor!= Color){
+         fprintf(stderr, "ERROR! With RGB Depth of file:'%s'\n", file);
+         exit(1);
+    }
+
+
+    while (fgetc(fp) != '\n');
+
+    // read data
+    fread(BufferSize, sizeof(BufferSize), 1, fp);
+
+    //Reformatting outputp3.ppm
+    fp = fopen("outputp3.ppm", "wb");
+    fprintf(fp, "P3\n");
+    fprintf(fp, "# John Sadie was here!\n");
+    fprintf(fp, "%d %d\n", pixelImg->x, pixelImg->y);
+    fprintf(fp, "%d\n", Color);
+    fprintf(fp, "%s\n", BufferSize);
+    fclose(fp);
 
 }
-
-void WriteP3(const char *file, pixelImage *pixelImg){
-
-}
-
 
 
 
@@ -155,7 +198,7 @@ void WriteP6(const char *file, pixelImage *pixelImg){
          exit(1);
     }
 
-    //Reformatting output.ppm
+    //Reformatting outputp6.ppm
     fprintf(fp, "P6\n");
     fprintf(fp, "# John Sadie Was Here!\n");
     fprintf(fp, "%d %d\n",pixelImg->x,pixelImg->y);
@@ -165,18 +208,29 @@ void WriteP6(const char *file, pixelImage *pixelImg){
     fclose(fp);
 }
 
+void P3ToP6(const char *file){
+
+    FILE *fp;
+    fp = fopen(file, "rb");
+
+
+}
+
+void P6ToP3(){
+}
+
 
 int main(int argc, char *argv[]){
     pixelImage *image;
 
     //Reading a p6 ppm file
-    image = ReadP6("p6.ppm");
+    //image = ReadP6("p6.ppm");
      //Writing to a p6 ppm file
-    WriteP6("outputp6.ppm",image);
+    //WriteP6("outputp6.ppm",image);
 
     //Reading a p3 ppm file
-   // image = ReadP3("p3.ppm");
-   // WriteP3("outputp3.ppm", image);
+    image = ReadWriteP3("p3.ppm");
+
 
     //Testing print statement
     printf("Did it work?");

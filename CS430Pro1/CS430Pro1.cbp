@@ -20,7 +20,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters='&quot;6&quot; &quot;7&quot; &quot;9&quot;' />
+				<Option parameters='&quot;3&quot; &quot;p6.ppm&quot; &quot;output.ppm&quot;' />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
